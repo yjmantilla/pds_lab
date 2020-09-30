@@ -1,24 +1,32 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot_signal(x,y=None,xlabel=None,ylabel=None,title=None,format=None,size=(15,5),show=True,ret=False):
-    fig, ax = plt.subplots(1, 1)  
+def plot_signal(x,y=None,xlabel=None,ylabel=None,title=None,format=None,size=(15,5),show=True,ret=False,subplots=(1,1),stem=False):
+    fig, axs = plt.subplots(*subplots)
+    if isinstance(axs,np.ndarray):
+        ax = axs[0]
+    else:
+        ax = axs
     ax.set_aspect('auto')
 
+    if stem:
+        foo = ax.stem
+    else:
+        foo = ax.plot
     if y is not None:
         if format is not None:
-          ax.plot(x,y,format)
+            foo(x,y,format)
         else:
-          ax.plot(x,y)
+            foo(x,y)
     else:
         if format is not None:
-          ax.plot(x,format)
+            foo(x,format)
         else:
-          ax.plot(x)
+            foo(x)
     if xlabel is not None:
-        plt.xlabel(xlabel,fontsize=18)
+        ax.set_xlabel(xlabel,fontsize=18)
     if ylabel is not None:
-        plt.ylabel(ylabel,fontsize=18)
+        ax.set_ylabel(ylabel,fontsize=18)
     if title is not None:
         ax.set_title(title,fontsize=24)
     if size is not None:
@@ -28,10 +36,25 @@ def plot_signal(x,y=None,xlabel=None,ylabel=None,title=None,format=None,size=(15
     if show:
         plt.show()
     if ret:
-        return fig,ax
+        if subplots == (1,1):
+            return fig,ax
+        else:
+            return fig,axs
 
 def s2f(seconds,samplerate=48000):
-    return int(seconds*samplerate)
+    if isinstance(seconds,np.ndarray):
+        frames = seconds*samplerate
+        return frames.astype(int)
+    else:
+        return int(seconds*samplerate)
+
+def f2s(frames,samplerate=48000):
+    if isinstance(frames,np.ndarray):
+        seconds = np.divide(frames,samplerate)
+        return seconds
+    else:
+        return frames/samplerate
+
 
 def find_nearest(array, values):
     array = np.asarray(array)

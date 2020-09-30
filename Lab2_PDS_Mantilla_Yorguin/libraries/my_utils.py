@@ -1,8 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot_signal(x,y=None,xlabel=None,ylabel=None,title=None,format=None,size=(15,5),show=True,ret=False):
-    fig, ax = plt.subplots(1, 1)  
+def plot_signal(x,y=None,xlabel=None,ylabel=None,title=None,format=None,size=(15,5),show=True,ret=False,subplots=(1,1)):
+    fig, axs = plt.subplots(*subplots)
+    if axs isinstance(np.ndarray):
+        ax = axs[0]
+    else:
+        ax = axs
     ax.set_aspect('auto')
 
     if y is not None:
@@ -28,7 +32,10 @@ def plot_signal(x,y=None,xlabel=None,ylabel=None,title=None,format=None,size=(15
     if show:
         plt.show()
     if ret:
-        return fig,ax
+        if subplots = (1,1):
+            return fig,ax
+        else:
+            return fig,axs
 
 def s2f(seconds,samplerate=48000):
     return int(seconds*samplerate)
